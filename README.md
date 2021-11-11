@@ -1,38 +1,4 @@
-# Voxseg
 
-Voxseg is a Python package for voice activity detection (VAD), for speech/non-speech audio segmentation. It provides a full VAD pipeline, including a pretrained VAD model, and it is based on work presented [here](https://arxiv.org/abs/2103.03529).
-
-Use of this VAD may be cited as follows:
-```
-@inproceedings{cnnbilstm_vad,
-    title = {A hybrid {CNN-BiLSTM} voice activity detector},
-    author = {Wilkinson, N. and Niesler, T.},
-    booktitle = {Proc. IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP)},
-    year = {2021},
-    address = {Toronto, Canada},
-}
-```
-
-## Installation
-
-To install this package, clone the repository from GitHub to a directory of your choice and install using pip:
-```bash
-git clone https://github.com/NickWilkinson37/voxseg.git
-pip install ./voxseg
-```
-In future, installation directly from the package manager will be supported.
-
-To test the installation run:
-```bash
-cd voxseg
-python -m unittest
-```
-The test will run the full VAD pipeline on two example audio files. This pipeline includes feature extraction, VAD and evaluation. The output should include the following*:
-- A progress bar monitoring the feature extraction process, followed by a DataFrame containing normalized-features and metadata.
-- A DataFrame containing model generated endpoints, indicating the starts and ends of discovered speech utterances.
-- A confusion matrix of speech vs non-speech, with the following values: TPR 0.935, FPR 0.137, FNR 0.065, FPR 0.863
-
-*The order in which these outputs appear may vary.
 
 ## Data Preparation
 Before using the VAD, a number of files need to be created to specify the audio that one wishes to process. These files are the same as those used by the Kaldi toolkit. Extensive documentation on the data preparation process for Kaldi may be found [here](https://kaldi-asr.org/doc/data_prep.html). Only the files required by the Voxseg toolkit are described here.
@@ -167,6 +133,3 @@ python3 train.py -s 0.1 train_dir model_name out_dir
 ```
 
 The training script may also be used without any flags, however this is not recommended, as it makes it difficult to tell whether the model is starting to overfit. When a validation set is provided the model with the best validation accuracy is saved. When no validation set is provided the model is saved after the final training epoch.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
