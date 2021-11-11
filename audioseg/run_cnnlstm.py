@@ -1,6 +1,6 @@
 # Module for running CNN-BiLSTM vad model,
 # may also be run directly as a script
-# Author: Nick Wilkinson 2021
+
 import argparse
 import os
 import numpy as np
@@ -8,7 +8,7 @@ import pandas as pd
 import tensorflow as tf
 from typing import Tuple
 from tensorflow.keras import models
-from voxseg import utils
+from audioseg import utils
 from scipy.signal import medfilt
 
 gpus = tf.config.experimental.list_physical_devices('GPU')

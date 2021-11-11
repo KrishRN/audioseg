@@ -1,7 +1,7 @@
 
 
 ## Data Preparation
-Before using the VAD, a number of files need to be created to specify the audio that one wishes to process. These files are the same as those used by the Kaldi toolkit. Extensive documentation on the data preparation process for Kaldi may be found [here](https://kaldi-asr.org/doc/data_prep.html). Only the files required by the Voxseg toolkit are described here.
+Before using the VAD, a number of files need to be created to specify the audio that one wishes to process. These files are the same as those used by the Kaldi toolkit. Extensive documentation on the data preparation process for Kaldi may be found [here](https://kaldi-asr.org/doc/data_prep.html). Only the files required by the audioseg toolkit are described here.
 
 1. `wav.scp` - this file provides the paths to the audio files one wishes to process, and assigns them a unique recording-id. It is structured as follows:
     `<recording-id> <extended-filename>`. Each entry should appear on a new line, for example:
@@ -23,7 +23,7 @@ Before using the VAD, a number of files need to be created to specify the audio 
     rec_002_full rec_002 0.0 350.0
     ```
 
-These two files should be placed in the same directory, usually named `data`, however you may give it any name. This is the directory that is provided as input to voxseg’s feature extraction.
+These two files should be placed in the same directory, usually named `data`, however you may give it any name. This is the directory that is provided as input to audioseg’s feature extraction.
 
 ## Usage
 The package may be used in a number of ways:
@@ -32,15 +32,15 @@ The package may be used in a number of ways:
 3. As a module within python, useful if one would like to integrate parts of the system into one's own python code.
 
 ### Full VAD pipeline
-This package may be used through a basic command-line interface. To run the full VAD pipeline with default settings, navigate to the voxseg directory and call:
+This package may be used through a basic command-line interface. To run the full VAD pipeline with default settings, navigate to the audioseg directory and call:
 ```bash
 # data_directory is Kaldi-style data directory and output_directory is destination for segments file 
-python3 voxseg/main.py data_directory output_directory
+python3 audioseg/main.py data_directory output_directory
 ```
 
-To explore the available flags for changing settings navigate to the voxseg directory and call:
+To explore the available flags for changing settings navigate to the audioseg directory and call:
 ```bash
-python3 voxseg/main.py -h
+python3 audioseg/main.py -h
 ```
 The most commonly used flags are:
 * -s sets the speech vs non-speech decision threshold (accepts float between 0 and 1, default is 0.5)
@@ -48,21 +48,21 @@ The most commonly used flags are:
 * -e: allows a reference directory to be given, against which the VAD output is scored (accepts path to Kaldi-style directory containing ground truth segments file)
 
 ### Individual scripts
-To run the smaller, individual scripts, navigate to the voxseg directory and call:
+To run the smaller, individual scripts, navigate to the audioseg directory and call:
 ```bash
 # reads Kaldi-style data directory and extracts features to .h5 file in output directory
-python3 voxseg/extract_feats.py data_directory output_directory
+python3 audioseg/extract_feats.py data_directory output_directory
 # runs VAD and saves output segments file in ouput directory
-python3 voxseg/run_cnnlstm.py -m model_path features_directory output_directory
+python3 audioseg/run_cnnlstm.py -m model_path features_directory output_directory
 # reads Kaldi-style data directory used as VAD input, the VAD output directory and a directory 
 # contining a ground truth segments file reference. 
-python3 voxseg/evaluate.py vad_input_directory vad_out_directory ground_truth_directory
+python3 audioseg/evaluate.py vad_input_directory vad_out_directory ground_truth_directory
 ```
 
 ### Module within Python
 To import the module an use it within custom Python scripts/modules:
 ```python
-import voxseg
+import audioseg
 from tensorflow.keras import models
 
 # feature extraction

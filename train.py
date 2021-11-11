@@ -1,6 +1,6 @@
-# Script for training custom VAD model for the voxseg toolkit
+# Script for training custom VAD model for the audioseg toolkit
 
-import voxseg
+import audioseg
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -49,7 +49,7 @@ def train_model(model, x_train, y_train, validation_split, x_dev=None, y_dev=Non
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='CHPC_VAD_train.py',
-                                     description='Train an instance of the voxseg VAD model.')
+                                     description='Train an instance of the audioseg VAD model.')
 
     parser.add_argument('-v', '--validation_dir', type=str,
                         help='a path to a Kaldi-style data directory containting \'wav.scp\', \'utt2spk\' and \'segments\'')
@@ -70,30 +70,30 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Fetch data
-    data_train = voxseg.prep_labels.prep_data(args.train_dir)
+    data_train = audioseg.prep_labels.prep_data(args.train_dir)
     if args.validation_dir:
-        data_dev = voxseg.prep_labels.prep_data(args.validation_dir)
+        data_dev = audioseg.prep_labels.prep_data(args.validation_dir)
 
     # Extract features
-    feats_train = voxseg.extract_feats.extract(data_train)
-    feats_train = voxseg.extract_feats.normalize(feats_train)
+    feats_train = audioseg.extract_feats.extract(data_train)
+    feats_train = audioseg.extract_feats.normalize(feats_train)
     if args.validation_dir:
-        feats_dev = voxseg.extract_feats.extract(data_dev)
-        feats_dev = voxseg.extract_feats.normalize(feats_dev)
+        feats_dev = audioseg.extract_feats.extract(data_dev)
+        feats_dev = audioseg.extract_feats.normalize(feats_dev)
 
     # Extract labels
-    labels_train = voxseg.prep_labels.get_labels(data_train)
-    labels_train['labels'] = voxseg.prep_labels.one_hot(labels_train['labels'])
+    labels_train = audioseg.prep_labels.get_labels(data_train)
+    labels_train['labels'] = audioseg.prep_labels.one_hot(labels_train['labels'])
     if args.validation_dir:
-        labels_dev = voxseg.prep_labels.get_labels(data_dev)
-        labels_dev['labels'] = voxseg.prep_labels.one_hot(labels_dev['labels'])
+        labels_dev = audioseg.prep_labels.get_labels(data_dev)
+        labels_dev['labels'] = audioseg.prep_labels.one_hot(labels_dev['labels'])
 
     # Train model
-    X = voxseg.utils.time_distribute(np.vstack(feats_train['normalized-features']), 15)
-    y = voxseg.utils.time_distribute(np.vstack(labels_train['labels']), 15)
+    X = audioseg.utils.time_distribute(np.vstack(feats_train['normalized-features']), 15)
+    y = audioseg.utils.time_distribute(np.vstack(labels_train['labels']), 15)
     if args.validation_dir:
-        X_dev = voxseg.utils.time_distribute(np.vstack(feats_dev['normalized-features']), 15)
-        y_dev = voxseg.utils.time_distribute(np.vstack(labels_dev['labels']), 15)
+        X_dev = audioseg.utils.time_distribute(np.vstack(feats_dev['normalized-features']), 15)
+        y_dev = audioseg.utils.time_distribute(np.vstack(labels_dev['labels']), 15)
     else:
         X_dev = None
         y_dev = None

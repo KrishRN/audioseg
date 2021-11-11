@@ -1,5 +1,5 @@
-# Tests for the voxseg package
-# Author: Nick Wilkinson 2021
+# Tests for the audioseg package
+
 import os
 import unittest
 import logging
@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pandas as pd
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
 from tensorflow.keras import models
-from voxseg import evaluate, extract_feats, run_cnnlstm, utils
+from audioseg import evaluate, extract_feats, run_cnnlstm, utils
 
 
 class TestExample(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestExample(unittest.TestCase):
 
     def test_model(self):
         feats = pd.read_hdf('tests/features/feats.h5')
-        model = models.load_model('voxseg/models/cnn_bilstm.h5')
+        model = models.load_model('audioseg/models/cnn_bilstm.h5')
         targets = run_cnnlstm.predict_targets(model, feats)
         endpoints = run_cnnlstm.decode(targets)
         run_cnnlstm.to_data_dir(endpoints, 'tests/output')

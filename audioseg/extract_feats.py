@@ -1,11 +1,11 @@
 # Module for extracting log-mel spectrogram features,
 # may also be run directly as a script
-# Author: Nick Wilkinson 2021
+
 import argparse
 import numpy as np
 import pandas as pd
 import os
-from voxseg import utils
+from audioseg import utils
 from python_speech_features import logfbank
 
 

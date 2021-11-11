@@ -1,5 +1,5 @@
-# Various utility functions for sub-tasks frequently used by the voxseg module
-# Author: Nick Wilkinson 2021
+# Various utility functions for sub-tasks frequently used by the audioseg module
+
 import pickle
 pickle.HIGHEST_PROTOCOL = 4
 import pandas as pd

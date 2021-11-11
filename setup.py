@@ -9,7 +9,7 @@ setup(
     author="Krishanthan",
     description="Python Audio Segmentation ",
     long_description=readme,
-    url="https://github.com/KrishRN/AudioSegmentation",
+    url="https://github.com/KrishRN/audioseg",
     packages=find_packages(exclude=("tests",)),
     classifiers=[
         'Programming Language :: Python',
