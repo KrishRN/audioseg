@@ -9,6 +9,8 @@ import pandas as pd
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
 from tensorflow.keras import models
 from audioseg import evaluate, extract_feats, run_cnnlstm, utils
+import train
+from train import Encoder
 
 
 class TestExample(unittest.TestCase):
@@ -23,7 +25,7 @@ class TestExample(unittest.TestCase):
 
     def test_model(self):
         feats = pd.read_hdf('tests/features/feats.h5')
-        model = models.load_model('audioseg/models/cnn_bilstm.h5')
+        model = models.load_model('audioseg/models/cnn_bilstm.h5')#custom_objects={'Encoder': Encoder}
         targets = run_cnnlstm.predict_targets(model, feats)
         endpoints = run_cnnlstm.decode(targets)
         run_cnnlstm.to_data_dir(endpoints, 'tests/output')

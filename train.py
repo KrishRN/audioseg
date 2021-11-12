@@ -35,7 +35,7 @@ def positional_encoding(position, d_model):
 
 
 class MultiHeadAttention(tf.keras.layers.Layer):
-    def __init__(self, d_model=128, num_heads=8, causal=False, dropout=0.0):
+    def __init__(self, d_model=128, num_heads=1, causal=False, dropout=0.0):
         super().__init__()
 
         assert d_model % num_heads == 0
@@ -94,7 +94,7 @@ class MultiHeadAttention(tf.keras.layers.Layer):
 
 
 class EncoderLayer(tf.keras.layers.Layer):
-    def __init__(self, d_model=128, num_heads=8, dff=2048, dropout=0.0):
+    def __init__(self, d_model=128, num_heads=1, dff=128, dropout=0.0):
         super().__init__()
 
         self.multi_head_attention = MultiHeadAttention(d_model, num_heads)
@@ -127,11 +127,11 @@ class EncoderLayer(tf.keras.layers.Layer):
 
 
 class Encoder(tf.keras.layers.Layer):
-    def __init__(self,  num_layers=4, d_model=128, num_heads=8, dff=2048,
-                 maximum_position_encoding=10000, dropout=0.0):
-        super().__init__()
-
+    def __init__(self, num_layers=1, d_model=128, num_heads=1, dff=128,
+                 maximum_position_encoding=10000, dropout=0.0, **kwargs):
+        super(Encoder, self).__init__()
         self.d_model = d_model
+        super(Encoder, self).__init__(**kwargs)
 
         self.pos = positional_encoding(maximum_position_encoding, d_model)
 
@@ -140,29 +140,16 @@ class Encoder(tf.keras.layers.Layer):
 
         self.dropout = tf.keras.layers.Dropout(dropout)
 
-    def call(self, inputs, mask=None, training=None):
-        x = self.embedding(inputs)
-        # positional encoding
-        x *= tf.math.sqrt(
-            tf.cast(self.d_model, tf.float32))  # scaling by the sqrt of d_model, not sure why or if needed??
-        x += self.pos[:, :tf.shape(x)[1], :]
-
-        x = self.dropout(x, training=training)
-
-        # Encoder layer
-        embedding_mask = self.embedding.compute_mask(inputs)
-        for encoder_layer in self.encoder_layers:
-            x = encoder_layer(x, mask=embedding_mask)
-
-        return x
-
-    def compute_mask(self, inputs, mask=None):
-        return self.embedding.compute_mask(inputs)
-
     def get_config(self):
-        config = super().get_config()
+        config = super(Encoder,self).get_config()
         config.update({"d_model": self.d_model})
         return config
+
+    def call(self, inputs, mask=None, training=None):
+        for encoder_layer in self.encoder_layers:
+            x = encoder_layer(inputs)
+
+        return x
 
 
 def cnn_bilstm(output_layer_width):
@@ -176,7 +163,7 @@ def cnn_bilstm(output_layer_width):
     model.add(layers.TimeDistributed(layers.Flatten()))
     model.add(layers.TimeDistributed(layers.Dense(128, activation='elu')))
     model.add(layers.Dropout(0.5))
-    model.add(Encoder( num_layers = 4, d_model = 128, num_heads = 8, dff = 2048, dropout = 0.0))
+    model.add(Encoder(num_layers=1, d_model=128, num_heads=1, dff=128, dropout=0.0))
     model.add(layers.Dropout(0.5))
     model.add(layers.TimeDistributed(layers.Dense(output_layer_width, activation='softmax')))
     model.compile(optimizer='adam',
